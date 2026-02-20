@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Authenticating...</title>
+  <script>
+    async function fetchUser(token) {
+      try {
+        const res = await fetch('https://discord.com/api/users/@me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error();
+        return await res.json();
+      } catch {
+        return null;
+      }
+    }
+
+    (async () => {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const token = params.get('access_token');
+      const returnedState = params.get('state');
+      const storedState = localStorage.getItem('oauth_state');
+
+      if (!token || returnedState !== storedState) {
+        alert('Invalid auth response.');
+        window.location.href = 'https://333warship.com';
+        return;
+      }
+
+      localStorage.removeItem('oauth_state');
+      const user = await fetchUser(token);
+      if (!user || !user.id) {
+        alert('Failed to fetch user info.');
+        window.location.href = 'https://333warship.com';
+        return;
+      }
+
+      localStorage.setItem('333warship_user', JSON.stringify({ id: user.id, email: user.email || 'hidden' }));
+      window.location.href = 'https://333warship.com/dashboard.html';
+    })();
+  </script>
+</head>
+<body><p>Authenticating... Redirecting...</p></body>
+</html>
