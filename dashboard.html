@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>333warship - Dashboard</title>
+  <style>
+    :root { --bg-black: #000000; --gray-med: #2a2a2a; --accent: #ff3333; }
+    body { margin:0; background:var(--bg-black) url('YOUR_BG_URL_HERE') no-repeat center/cover fixed; color:#e0e0e0; min-height:100vh; font-family:Arial; }
+    .container { padding:4rem; max-width:1200px; margin:auto; background:rgba(26,26,26,0.7); backdrop-filter:blur(10px); border-radius:20px; margin-top:2rem; }
+    h1 { color:var(--accent); text-align:center; font-size:3.5rem; text-shadow:0 0 15px var(--accent); }
+    #plus-btn { position:fixed; bottom:30px; right:30px; width:70px; height:70px; background:var(--accent); border:none; border-radius:50%; font-size:3rem; color:white; cursor:pointer; box-shadow:0 0 30px rgba(255,51,51,0.6); transition:all 0.3s; display:none; }
+    #plus-btn:hover { transform:scale(1.1); background:#ff1a1a; }
+    #form-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); align-items:center; justify-content:center; z-index:100; }
+    .modal-content { background:#2a2a2a; padding:3rem; border-radius:16px; width:90%; max-width:500px; text-align:center; }
+    input, button { width:100%; padding:1rem; margin:0.8rem 0; border-radius:8px; border:none; font-size:1.1rem; }
+    input { background:#444; color:white; }
+    button { background:var(--accent); color:white; cursor:pointer; }
+    #file-preview { margin-top:1rem; color:#aaa; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>333warship Dashboard</h1>
+  <p id="welcome">Loading...</p>
+</div>
+
+<button id="plus-btn">+</button>
+
+<div id="form-modal">
+  <div class="modal-content">
+    <h2>Add Product</h2>
+    <input id="prod-name" placeholder="Product Name" />
+    <input id="prod-price" type="number" placeholder="Price ($)" step="0.01" />
+    <input id="prod-file" type="file" accept="*/*" />
+    <div id="file-preview"></div>
+    <button onclick="submitProduct()">Submit</button>
+    <button onclick="document.getElementById('form-modal').style.display='none'" style="background:#555;">Cancel</button>
+  </div>
+</div>
+
+<script>
+  const ALLOWED_IDS = ['1472399360779092245', '1177322382306844794', '1289708914656542784']; // add yours if missing
+
+  const userData = JSON.parse(localStorage.getItem('333warship_user') || '{}');
+  if (!userData.id) {
+    window.location.href = 'https://333warship.com';
+  }
+
+  document.getElementById('welcome').textContent = `Welcome, Discord User ${userData.id} (${userData.email})`;
+
+  const plusBtn = document.getElementById('plus-btn');
+  if (ALLOWED_IDS.includes(userData.id)) {
+    plusBtn.style.display = 'block';
+  }
+
+  plusBtn.onclick = () => {
+    document.getElementById('form-modal').style.display = 'flex';
+  };
+
+  document.getElementById('prod-file').onchange = (e) => {
+    const f = e.target.files[0];
+    document.getElementById('file-preview').textContent = f ? `Selected: ${f.name} (${(f.size/1024).toFixed(2)} KB)` : '';
+  };
+
+  function submitProduct() {
+    const name = document.getElementById('prod-name').value.trim();
+    const price = document.getElementById('prod-price').value;
+    const file = document.getElementById('prod-file').files[0];
+
+    if (!name || !price || !file) return alert('Complete all fields.');
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const products = JSON.parse(localStorage.getItem('333warship_products') || '[]');
+      products.push({ name, price, fileName: file.name, fileBase64: e.target.result, addedBy: userData.id });
+      localStorage.setItem('333warship_products', JSON.stringify(products));
+      alert(`Added "${name}" @ $${price}`);
+      document.getElementById('form-modal').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+</script>
+</body>
+</html>
