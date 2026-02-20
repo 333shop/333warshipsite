@@ -3,97 +3,160 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>333warship</title>
+  <title>333warship - Marketplace</title>
   <style>
     :root {
       --bg-black: #000000;
-      --gray-med: #2a2a2a;
-      --gray-light: #444444;
+      --gray-dk: #1a1a1a;
+      --gray-md: #2a2a2a;
+      --gray-lt: #444444;
       --accent: #ff3333;
-      --accent-hover: #ff1a1a;
+      --accent-hvr: #ff1a1a;
+      --text: #e0e0e0;
     }
     body {
       margin: 0;
       background: var(--bg-black) url('https://cdn.discordapp.com/attachments/1472431047315685497/1474196428875108584/02855507-6CD6-4CC1-9E82-E3C9898575AB.jpg?ex=6998f7e9&is=6997a669&hm=af3e729535faf7bc88f7fa198aa2847823ab9832371d91e755aea7881d351cfb&') no-repeat center center fixed;
       background-size: cover;
-      color: #e0e0e0;
+      color: var(--text);
       min-height: 100vh;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 2rem;
     }
-    header { padding: 1rem; background: rgba(0,0,0,0.6); text-align: center; }
-    h1 { color: var(--accent); text-shadow: 0 0 15px var(--accent); margin: 0; font-size: 2.5rem; }
-    main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
-    .container {
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    h1 {
+      font-size: 5rem;
+      margin: 0;
+      color: var(--accent);
+      text-shadow: 0 0 30px var(--accent), 0 0 60px #000;
+      letter-spacing: 4px;
+      font-weight: 900;
+    }
+    .listings {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
       background: rgba(26,26,26,0.88);
       backdrop-filter: blur(12px);
-      padding: 3rem;
-      border-radius: 20px;
-      box-shadow: 0 0 50px rgba(255,51,51,0.3);
-      text-align: center;
-      max-width: 500px;
-      width: 100%;
       border: 1px solid #444;
+      border-radius: 16px;
+      padding: 1.8rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      transition: all 0.3s ease;
     }
-    button {
-      padding: 1.2rem 2.5rem;
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(255,51,51,0.25);
+      border-color: var(--accent);
+    }
+    .card h3 {
+      margin: 0 0 1rem;
+      color: var(--accent);
+      font-size: 1.6rem;
+    }
+    .card p {
+      margin: 0.6rem 0;
+      color: #ccc;
+    }
+    .buy-btn {
       background: var(--accent);
-      border: none;
-      border-radius: 12px;
       color: white;
-      font-size: 1.3rem;
+      border: none;
+      padding: 0.9rem 1.8rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
       cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
       transition: all 0.3s;
-      margin: 1rem;
     }
-    button:hover { background: var(--accent-hover); transform: scale(1.05); }
-    #plus-btn {
+    .buy-btn:hover {
+      background: var(--accent-hvr);
+      transform: scale(1.03);
+    }
+    #add-btn {
       position: fixed;
       bottom: 40px;
       right: 40px;
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
       background: var(--accent);
       border: none;
       border-radius: 50%;
-      font-size: 4rem;
+      font-size: 4.5rem;
       color: white;
       cursor: pointer;
-      box-shadow: 0 0 40px rgba(255,51,51,0.5);
-      display: none;
+      box-shadow: 0 10px 40px rgba(255,51,51,0.5);
       transition: all 0.3s;
+      z-index: 1000;
     }
-    #plus-btn:hover { transform: scale(1.1); background: var(--accent-hover); }
-    #form-modal {
+    #add-btn:hover {
+      transform: scale(1.15) rotate(90deg);
+      background: var(--accent-hvr);
+    }
+    .modal {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 2000;
     }
     .modal-content {
-      background: #2a2a2a;
+      background: var(--gray-dk);
       padding: 3rem;
-      border-radius: 16px;
+      border-radius: 20px;
       width: 90%;
-      max-width: 500px;
+      max-width: 520px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 60px rgba(255,51,51,0.4);
     }
-    input {
+    input, textarea {
       width: 100%;
       padding: 1rem;
       margin: 1rem 0;
-      background: #444;
+      background: #222;
       border: 1px solid #555;
-      border-radius: 8px;
+      border-radius: 10px;
       color: white;
       font-size: 1.1rem;
     }
-    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(255,51,51,0.4); }
-    #file-preview { color: #aaa; margin: 1rem 0; }
-    #welcome, #status { font-size: 1.2rem; margin: 1.5rem 0; }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(255,51,51,0.4);
+    }
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 1.2rem;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 1rem;
+    }
+    button.primary:hover {
+      background: var(--accent-hvr);
+    }
+    button.secondary {
+      background: #444;
+      margin-top: 0.8rem;
+    }
+    #file-info {
+      color: #aaa;
+      margin: 0.5rem 0;
+      font-size: 0.95rem;
+    }
   </style>
 </head>
 <body>
@@ -102,147 +165,133 @@
   <h1>333warship</h1>
 </header>
 
-<main id="main-content">
-  <div class="container" id="login-page">
-    <h2>Access Restricted</h2>
-    <button onclick="discordLogin()">Login with Discord</button>
-    <p id="status">Only authorized users</p>
-  </div>
+<div class="listings" id="listings"></div>
 
-  <div class="container" id="dashboard-page" style="display:none;">
-    <h2>Dashboard</h2>
-    <p id="welcome">Loading...</p>
-    <button id="plus-btn">+</button>
-  </div>
-</main>
+<button id="add-btn">+</button>
 
-<div id="form-modal">
+<!-- Add Item Modal -->
+<div class="modal" id="add-modal">
   <div class="modal-content">
-    <h2>Add Product</h2>
-    <input id="prod-name" placeholder="Product Name" />
-    <input id="prod-price" type="number" placeholder="Price ($)" step="0.01" />
-    <input id="prod-file" type="file" accept="*/*" />
-    <div id="file-preview"></div>
-    <button onclick="submitProduct()">Submit</button>
-    <button onclick="closeModal()" style="background:#555;">Cancel</button>
+    <h2 style="text-align:center; color:var(--accent);">Add Item For Sale</h2>
+    <input id="item-name" placeholder="Name of thing you're selling" />
+    <input id="item-price" type="text" placeholder="Price (e.g. $25 or 5000 Robux)" />
+    <input id="item-file" type="file" accept="*/*" />
+    <div id="file-info"></div>
+    <button class="primary" onclick="addItem()">Add to Marketplace</button>
+    <button class="primary secondary" onclick="closeModal('add-modal')">Cancel</button>
+  </div>
+</div>
+
+<!-- Buy Modal -->
+<div class="modal" id="buy-modal">
+  <div class="modal-content">
+    <h2 style="text-align:center; color:var(--accent);">Complete Purchase</h2>
+    <p id="buy-title" style="text-align:center; margin-bottom:1.5rem;"></p>
+    <p style="text-align:center; color:#ccc;">Pay with:</p>
+    <select id="payment-type" style="width:100%; padding:1rem; margin:1rem 0; background:#222; color:white; border:1px solid #555; border-radius:10px;">
+      <option value="apple">Apple Gift Card</option>
+      <option value="robux">Robux Gift Card</option>
+    </select>
+    <textarea id="gift-code" placeholder="Paste your gift card code here..." rows="4"></textarea>
+    <button class="primary" onclick="submitPayment()">Submit Payment</button>
+    <button class="primary secondary" onclick="closeModal('buy-modal')">Cancel</button>
   </div>
 </div>
 
 <script>
-  // Config
-  const CLIENT_ID = '1474196601030312088';
-  const REDIRECT_URI = window.location.origin + '/#callback'; // Uses hash for single-file
-  const SCOPES = 'identify email'; // minimal
-  const ALLOWED_IDS = ['1472399360779092245', '1177322382306844794', '1289708914656542784']; // your list
+  const listingsDiv = document.getElementById('listings');
+  const addModal = document.getElementById('add-modal');
+  const buyModal = document.getElementById('buy-modal');
 
-  // Simple router via hash
-  function route() {
-    const hash = window.location.hash.substring(1);
-    const loginPage = document.getElementById('login-page');
-    const dashPage = document.getElementById('dashboard-page');
-
-    if (hash === 'callback') {
-      handleCallback();
-    } else if (localStorage.getItem('333warship_user')) {
-      showDashboard();
-    } else {
-      loginPage.style.display = 'block';
-      dashPage.style.display = 'none';
+  // Load saved listings from localStorage
+  function loadListings() {
+    const saved = localStorage.getItem('333warship_listings');
+    if (saved) {
+      const items = JSON.parse(saved);
+      listingsDiv.innerHTML = '';
+      items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${item.name}</h3>
+          <p><strong>Price:</strong> ${item.price}</p>
+          <p><strong>File:</strong> ${item.fileName} (${(item.fileSize / 1024).toFixed(2)} KB)</p>
+          <button class="buy-btn" onclick="openBuyModal(${index}, '${item.name}')">Buy Now</button>
+        `;
+        listingsDiv.appendChild(card);
+      });
     }
   }
 
-  function discordLogin() {
-    const state = Math.random().toString(36).substring(2);
-    localStorage.setItem('oauth_state', state);
-    const authUrl = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=${encodeURIComponent(SCOPES)}&state=${state}`;
-    window.location.href = authUrl;
-  }
+  // Add new item
+  function addItem() {
+    const name = document.getElementById('item-name').value.trim();
+    const price = document.getElementById('item-price').value.trim();
+    const fileInput = document.getElementById('item-file');
+    const file = fileInput.files[0];
 
-  async function handleCallback() {
-    const hash = window.location.hash.substring(1);
-    const params = new URLSearchParams(hash);
-    const token = params.get('access_token');
-    const returnedState = params.get('state');
-    const storedState = localStorage.getItem('oauth_state');
-
-    if (!token || returnedState !== storedState) {
-      alert('Auth failed or tampered.');
-      window.location.hash = '';
+    if (!name || !price || !file) {
+      alert('Fill all fields and select a file.');
       return;
     }
 
-    localStorage.removeItem('oauth_state');
-    window.location.hash = ''; // clean URL
-
-    try {
-      const res = await fetch('https://discord.com/api/users/@me', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const user = await res.json();
-      if (!user.id) throw new Error();
-
-      localStorage.setItem('333warship_user', JSON.stringify({ id: user.id, email: user.email || 'N/A' }));
-      showDashboard();
-    } catch (e) {
-      alert('Failed to fetch Discord user info.');
-      window.location.hash = '';
-    }
-  }
-
-  function showDashboard() {
-    const userData = JSON.parse(localStorage.getItem('333warship_user') || '{}');
-    if (!userData.id) return window.location.hash = '';
-
-    document.getElementById('login-page').style.display = 'none';
-    document.getElementById('dashboard-page').style.display = 'block';
-    document.getElementById('welcome').textContent = `Welcome, Discord User ${userData.id} (${userData.email})`;
-
-    const plusBtn = document.getElementById('plus-btn');
-    if (ALLOWED_IDS.includes(userData.id)) {
-      plusBtn.style.display = 'block';
-    }
-  }
-
-  document.getElementById('plus-btn').onclick = () => {
-    document.getElementById('form-modal').style.display = 'flex';
-  };
-
-  function closeModal() {
-    document.getElementById('form-modal').style.display = 'none';
-  }
-
-  document.getElementById('prod-file').onchange = (e) => {
-    const file = e.target.files[0];
-    document.getElementById('file-preview').textContent = file ? `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)` : '';
-  };
-
-  function submitProduct() {
-    const name = document.getElementById('prod-name').value.trim();
-    const price = document.getElementById('prod-price').value;
-    const fileInput = document.getElementById('prod-file');
-    const file = fileInput.files[0];
-
-    if (!name || !price || !file) return alert('Fill everything.');
-
     const reader = new FileReader();
     reader.onload = (e) => {
-      const products = JSON.parse(localStorage.getItem('333warship_products') || '[]');
-      products.push({ name, price, fileName: file.name, fileBase64: e.target.result });
-      localStorage.setItem('333warship_products', JSON.stringify(products));
-      alert(`"${name}" added @ $${price} (local storage only)`);
-      closeModal();
-      // Clear inputs
-      document.getElementById('prod-name').value = '';
-      document.getElementById('prod-price').value = '';
+      const listings = JSON.parse(localStorage.getItem('333warship_listings') || '[]');
+      listings.push({
+        name,
+        price,
+        fileName: file.name,
+        fileSize: file.size,
+        fileBase64: e.target.result // stored but not displayed
+      });
+      localStorage.setItem('333warship_listings', JSON.stringify(listings));
+      closeModal('add-modal');
+      loadListings();
+      // Clear form
+      document.getElementById('item-name').value = '';
+      document.getElementById('item-price').value = '';
       fileInput.value = '';
-      document.getElementById('file-preview').textContent = '';
+      document.getElementById('file-info').textContent = '';
     };
     reader.readAsDataURL(file);
   }
 
+  // Buy flow
+  let currentBuyIndex = -1;
+  function openBuyModal(index, name) {
+    currentBuyIndex = index;
+    document.getElementById('buy-title').textContent = `Buying: ${name}`;
+    buyModal.style.display = 'flex';
+  }
+
+  function submitPayment() {
+    const code = document.getElementById('gift-code').value.trim();
+    if (!code) {
+      alert('Paste a code.');
+      return;
+    }
+    alert('Payment submitted! (This is a demo — no real processing occurred)\nThank you for your purchase.');
+    closeModal('buy-modal');
+    document.getElementById('gift-code').value = '';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+
+  // Event listeners
+  document.getElementById('add-btn').onclick = () => {
+    addModal.style.display = 'flex';
+  };
+
+  document.getElementById('item-file').onchange = (e) => {
+    const file = e.target.files[0];
+    document.getElementById('file-info').textContent = file ? `Selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)` : '';
+  };
+
   // Init
-  window.addEventListener('hashchange', route);
-  route(); // on load
+  loadListings();
 </script>
 </body>
 </html>
